@@ -36,7 +36,7 @@ const remove = async (dt, id) => {
 const removeMany = async (dt, IDs) => {
   const filteredData = DB[dt].filter(el => !IDs.find(id => id === el.id));
   DB[dt].length = 0;
-  DB[dt].fill(filteredData);
+  filteredData.map(el => DB[dt].push(el));
 };
 
 module.exports = { getAll, get, create, update, remove, removeMany };

@@ -17,7 +17,6 @@ const update = (id, task) => tasksRepo.update(id, task);
 const updateMany = (tasks, changes) => {
   tasks.forEach(task => {
     tasksRepo.update(task.id, { ...task, ...changes });
-    console.log({ ...task, ...changes });
   });
 };
 

@@ -11,7 +11,7 @@ const update = (id, user) => usersRepo.update(id, user);
 
 const remove = async id => {
   const assignedTasks = await tasksService.getByUserID(id);
-  tasksService.updateMany(assignedTasks, { userId: null });
+  await tasksService.updateMany(assignedTasks, { userId: null });
   return usersRepo.remove(id);
 };
 
