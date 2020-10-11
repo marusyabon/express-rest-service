@@ -10,11 +10,7 @@ class Repository {
   }
 
   async get(id) {
-    const entity = await DB.get(this.dt, id);
-    if (!entity) {
-      throw new Error('Entity was not found');
-    }
-    return entity;
+    return DB.get(this.dt, id);
   }
 
   async create(entity) {
@@ -27,6 +23,10 @@ class Repository {
 
   async remove(id) {
     return DB.remove(this.dt, id);
+  }
+
+  async removeMany(ids) {
+    return DB.removeMany(this.dt, ids);
   }
 }
 
