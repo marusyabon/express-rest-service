@@ -1,31 +1,35 @@
 const User = require('../resources/users/user.model');
-const DB = [];
-
-DB.push(new User(), new User(), new User());
-
-const getAllUsers = async () => [...DB];
-
-const getUser = async id => DB.find(el => el.id === id);
-
-const createUser = async user => {
-  DB.push(user);
-  return getUser(user.id);
+const DB = {
+  Users: [],
+  Boards: [],
+  Tasks: []
 };
 
-const updateUser = async (id, user) => {
-  const index = DB.findIndex(el => el.id === id);
+DB.Users.push(new User(), new User(), new User());
+
+const getAll = async dt => [...DB[dt]];
+
+const get = async (dt, id) => DB[dt].find(el => el.id === id);
+
+const create = async (dt, entity) => {
+  DB[dt].push(entity);
+  return get(dt, entity.id);
+};
+
+const update = async (dt, id, entity) => {
+  const index = DB[dt].findIndex(el => el.id === id);
   if (index >= 0) {
-    DB.splice(index, 1, { ...user, id });
+    DB[dt].splice(index, 1, { ...entity, id });
   }
-  return getUser(id);
+  return get(dt, id);
 };
 
-const removeUser = async id => {
-  const index = DB.findIndex(el => el.id === id);
+const remove = async (dt, id) => {
+  const index = DB[dt].findIndex(el => el.id === id);
   if (index >= 0) {
-    DB.splice(index, 1);
+    DB[dt].splice(index, 1);
   }
   return id;
 };
 
-module.exports = { getAllUsers, getUser, createUser, updateUser, removeUser };
+module.exports = { getAll, get, create, update, remove };
