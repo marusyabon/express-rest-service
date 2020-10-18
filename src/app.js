@@ -2,16 +2,20 @@ const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const path = require('path');
 const YAML = require('yamljs');
+const { INTERNAL_SERVER_ERROR, getStatusText } = require('http-status-codes');
+const { logger, logRequests } = require('./common/logger');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
+const { ValidationError, NotFoundError } = require('./common/customErrors');
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 app.use(express.json());
-
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+
+app.use(logRequests);
 
 app.use('/', (req, res, next) => {
   if (req.originalUrl === '/') {
@@ -31,5 +35,31 @@ app.use(
   },
   taskRouter
 );
+
+app.use((err, req, res, next) => {
+  if (err instanceof ValidationError || err instanceof NotFoundError) {
+    res.status(err.status).send(err.message);
+    return;
+  }
+  next(err);
+});
+
+/* eslint-disable */
+app.use((err, req, res, next) => {
+  res.status(INTERNAL_SERVER_ERROR).send(getStatusText(INTERNAL_SERVER_ERROR));
+});
+
+process
+  .on('unhandledRejection', reason => {
+    logger.error(`Unhandled rejection detected: ${reason.message}`);
+  })
+  .on('uncaughtException', (err, origin) => {
+    logger.error(`Caught exception: ${err.message}`);
+    process.exit(1);
+  });
+
+// throw Error('Oops!');
+
+// Promise.reject(Error('Oops!'));
 
 module.exports = app;
