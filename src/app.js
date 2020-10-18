@@ -12,15 +12,6 @@ const { ValidationError, NotFoundError } = require('./common/customErrors');
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
-process
-  .on('unhandledRejection', reason => {
-    logger.error(`Unhandled rejection detected: ${reason}`);
-  })
-  .on('uncaughtException', (err, origin) => {
-    logger.error(`Caught exception: ${err}. Exception origin: ${origin}`);
-    throw new Error(err);
-  });
-
 app.use(express.json());
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
@@ -57,5 +48,18 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   res.status(INTERNAL_SERVER_ERROR).send(getStatusText(INTERNAL_SERVER_ERROR));
 });
+
+process
+  .on('unhandledRejection', reason => {
+    logger.error(`Unhandled rejection detected: ${reason.message}`);
+  })
+  .on('uncaughtException', (err, origin) => {
+    logger.error(`Caught exception: ${err.message}`);
+    process.exit(1);
+  });
+
+// throw Error('Oops!');
+
+// Promise.reject(Error('Oops!'));
 
 module.exports = app;
