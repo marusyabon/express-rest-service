@@ -55,7 +55,7 @@ process
   })
   .on('uncaughtException', (err, origin) => {
     logger.error(`Caught exception: ${err.message}`);
-    process.exit(1);
+    logger.on('finish', () => process.exit(1))
   });
 
 // throw Error('Oops!');
