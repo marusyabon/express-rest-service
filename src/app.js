@@ -3,7 +3,7 @@ const swaggerUI = require('swagger-ui-express');
 const path = require('path');
 const YAML = require('yamljs');
 const { INTERNAL_SERVER_ERROR, getStatusText } = require('http-status-codes');
-const logger = require('./common/logger');
+const { logger, logRequests } = require('./common/logger');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
@@ -24,18 +24,7 @@ process
 app.use(express.json());
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-app.use('/', (req, res, next) => {
-  const { method, protocol, url, query, body } = req;
-  const host = req.get('host');
-
-  logger.info(`
-    method= ${method},
-    url= ${protocol}://${host}${url},
-    query parameters= ${JSON.stringify(query)},
-    body= ${JSON.stringify(body)}`);
-
-  next();
-});
+app.use(logRequests);
 
 app.use('/', (req, res, next) => {
   if (req.originalUrl === '/') {
