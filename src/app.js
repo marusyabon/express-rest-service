@@ -7,7 +7,7 @@ const logger = require('./common/logger');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
-const ValidationError = require('./common/validationError');
+const { ValidationError, NotFoundError } = require('./common/customErrors');
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
@@ -57,8 +57,8 @@ app.use(
 );
 
 app.use((err, req, res, next) => {
-  if (err instanceof ValidationError) {
-    res.status(err.status).send(err.text);
+  if (err instanceof ValidationError || err instanceof NotFoundError) {
+    res.status(err.status).send(err.message);
     return;
   }
   next(err);
