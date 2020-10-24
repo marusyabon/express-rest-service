@@ -3,6 +3,8 @@ const swaggerUI = require('swagger-ui-express');
 const path = require('path');
 const YAML = require('yamljs');
 const { INTERNAL_SERVER_ERROR, getStatusText } = require('http-status-codes');
+require('express-async-errors');
+
 const { logger, logRequests } = require('./common/logger');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
