@@ -57,7 +57,7 @@ if (process.env.NODE_ENV === 'development') {
       format: winston.format.simple(),
       handleExceptions: true,
       handleRejections: true,
-      colorize: false
+      colorize: true
     })
   );
 }
