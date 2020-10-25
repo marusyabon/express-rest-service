@@ -1,7 +1,7 @@
-const tasksRepo = require('./task.memory.repository');
+const tasksRepo = require('./task.repository');
 const { NotFoundError } = require('../../common/customErrors');
 
-const getAll = async () => tasksRepo.getAll();
+const getAll = async () => tasksRepo.getMany({});
 
 const get = async id => {
   const task = await tasksRepo.get(id);
@@ -11,11 +11,7 @@ const get = async id => {
   throw new NotFoundError('Task not found');
 };
 
-const getByUserID = async userId =>
-  (await getAll()).filter(el => el.userId === userId);
-
-const getByBoardID = async boardId =>
-  (await getAll()).filter(el => el.boardId === boardId);
+const getByBoardID = async boardId => tasksRepo.getMany({ boardId });
 
 const create = task => tasksRepo.create(task);
 
@@ -24,10 +20,8 @@ const update = async (id, task) => {
   return tasksRepo.update(id, task);
 };
 
-const updateMany = (tasks, changes) => {
-  tasks.forEach(task => {
-    tasksRepo.update(task.id, { ...task, ...changes });
-  });
+const updateMany = (params, changes) => {
+  tasksRepo.updateMany(params, changes);
 };
 
 const remove = async id => {
@@ -35,12 +29,13 @@ const remove = async id => {
   return tasksRepo.remove(id);
 };
 
-const removeMany = IDs => tasksRepo.removeMany(IDs);
+const removeMany = async params => {
+  return tasksRepo.removeMany(params);
+};
 
 module.exports = {
   getAll,
   get,
-  getByUserID,
   getByBoardID,
   create,
   update,

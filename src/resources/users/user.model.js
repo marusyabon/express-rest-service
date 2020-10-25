@@ -1,19 +1,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userShema = new Schema(
-  {
-    name: String,
-    login: String,
-    password: {
-      type: String,
-      select: false
-    }
-  },
-  {
-    collection: 'users'
+const userShema = new Schema({
+  name: String,
+  login: String,
+  password: {
+    type: String,
+    select: false
   }
-);
+});
 
 userShema.set('toJSON', {
   virtuals: true,

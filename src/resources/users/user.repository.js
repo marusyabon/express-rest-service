@@ -4,8 +4,8 @@ const getAll = async () => {
   return User.find({});
 };
 
-const get = async _id => {
-  return User.findOne({ _id });
+const get = async id => {
+  return User.findById(id);
 };
 
 const create = async user => {
