@@ -1,23 +1,22 @@
-const uuid = require('uuid');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-class Task {
-  constructor({
-    id = uuid(),
-    title = 'New task',
-    order,
-    description,
-    userId,
-    boardId,
-    columnId
-  } = {}) {
-    this.id = id;
-    this.title = title;
-    this.order = order;
-    this.description = description;
-    this.userId = userId;
-    this.boardId = boardId;
-    this.columnId = columnId;
+const taskShema = new Schema({
+  title: String,
+  order: Number,
+  description: String,
+  userId: { type: Schema.Types.ObjectId, ref: 'User' },
+  boardId: { type: Schema.Types.ObjectId, ref: 'Board' },
+  columnId: { type: Schema.Types.ObjectId, ref: 'Column' }
+});
+
+taskShema.set('toJSON', {
+  virtuals: true,
+  transform: (doc, ret) => {
+    delete ret.__v;
+    ret.id = ret._id.toString();
+    delete ret._id;
   }
-}
+});
 
-module.exports = Task;
+module.exports = mongoose.model('Task', taskShema);

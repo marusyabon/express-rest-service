@@ -1,4 +1,4 @@
-const usersRepo = require('./user.memory.repository');
+const usersRepo = require('./user.repository');
 const tasksService = require('../tasks/task.service');
 const { NotFoundError } = require('../../common/customErrors');
 
@@ -20,9 +20,8 @@ const update = async (id, user) => {
 };
 
 const remove = async id => {
-  await get(id); // if user is not exists throw an error
-  const assignedTasks = await tasksService.getByUserID(id);
-  await tasksService.updateMany(assignedTasks, { userId: null });
+  await get(id);
+  await tasksService.updateMany({ userId: id }, { userId: null });
   return usersRepo.remove(id);
 };
 

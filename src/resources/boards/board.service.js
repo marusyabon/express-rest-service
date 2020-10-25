@@ -1,4 +1,4 @@
-const boardsRepo = require('./board.memory.repository');
+const boardsRepo = require('./board.repository');
 const tasksService = require('../tasks/task.service');
 const { NotFoundError } = require('../../common/customErrors');
 
@@ -21,10 +21,7 @@ const update = async (id, board) => {
 
 const remove = async id => {
   await get(id);
-  const taskIDsToDelete = (await tasksService.getByBoardID(id)).map(
-    el => el.id
-  );
-  tasksService.removeMany(taskIDsToDelete);
+  await tasksService.removeMany({ boardId: id });
   return boardsRepo.remove(id);
 };
 

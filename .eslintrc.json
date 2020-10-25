@@ -67,6 +67,7 @@
         "use-isnan": 2,
         "valid-typeof": 2,
         "no-unexpected-multiline": 0,
+        "node/no-extraneous-require": 0,
         // Best Practices
         "block-scoped-var": 2,
         "complexity": [
