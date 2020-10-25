@@ -1,4 +1,4 @@
-const usersRepo = require('./user.memory.repository');
+const usersRepo = require('./user.repository');
 const tasksService = require('../tasks/task.service');
 const { NotFoundError } = require('../../common/customErrors');
 
