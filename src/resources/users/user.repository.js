@@ -4,18 +4,18 @@ const getAll = async () => {
   return User.find({});
 };
 
-const get = async id => {
-  return User.findById(id);
+const get = async params => {
+  return User.findOne(params);
 };
 
 const create = async user => {
   const createdUser = await User.create(user);
-  return get(createdUser._id);
+  return get({ _id: createdUser._id });
 };
 
 const update = async (_id, user) => {
   await User.updateOne({ _id }, user);
-  return get(_id);
+  return get({ _id });
 };
 
 const remove = async _id => {
