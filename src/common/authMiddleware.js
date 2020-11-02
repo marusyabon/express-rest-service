@@ -7,11 +7,15 @@ module.exports = function checkToken(req, res, next) {
   if (authHeader !== undefined) {
     const [type, token] = authHeader.split(' ');
 
-    if (type !== 'Bearer' || token === 'undefined') {
+    if (type !== 'Bearer') {
       return res.status(401).send('Unauthorized');
     }
-    jwt.verify(token, JWT_SECRET_KEY);
-    return next();
+    try {
+      jwt.verify(token, JWT_SECRET_KEY);
+      return next();
+    } catch (err) {
+      return res.status(401).send('Unauthorized');
+    }
   }
   return res.status(401).send('Unauthorized');
 };
