@@ -15,8 +15,10 @@ const winston = require('./common/logger');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
+const loginRouter = require('./resources/auth/login.router');
 const { ValidationError, NotFoundError } = require('./common/customErrors');
 const logger = require('./common/logger');
+const checkToken = require('./common/authMiddleware');
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
@@ -41,16 +43,10 @@ app.use(
   )
 );
 
-app.use('/users', userRouter);
-app.use('/boards', boardRouter);
-app.use(
-  '/boards/:id/tasks',
-  (req, res, next) => {
-    req.boardId = req.params.id;
-    next();
-  },
-  taskRouter
-);
+app.use('/login', loginRouter);
+app.use('/users', checkToken, userRouter);
+app.use('/boards', checkToken, boardRouter);
+app.use('/boards/:boardId/tasks', checkToken, taskRouter);
 
 app.use((req, res, next) => next(createError(NOT_FOUND)));
 

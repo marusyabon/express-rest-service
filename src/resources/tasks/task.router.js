@@ -1,9 +1,9 @@
-const router = require('express').Router();
+const router = require('express').Router({ mergeParams: true });
 const tasksService = require('./task.service');
 const Task = require('./task.model');
 
 router.route('/').get(async (req, res) => {
-  const tasks = await tasksService.getByBoardID(req.boardId);
+  const tasks = await tasksService.getByBoardID(req.params.boardId);
   res.json(tasks);
 });
 
@@ -14,7 +14,7 @@ router.route('/:id').get(async (req, res) => {
 
 router.route('/').post(async (req, res) => {
   const task = await tasksService.create(
-    new Task({ ...req.body, boardId: req.boardId })
+    new Task({ ...req.body, boardId: req.params.boardId })
   );
   res.json(task);
 });

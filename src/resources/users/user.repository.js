@@ -4,18 +4,24 @@ const getAll = async () => {
   return User.find({});
 };
 
-const get = async id => {
-  return User.findById(id);
+const get = async params => {
+  return User.findOne(params);
+};
+
+const getAuthData = async login => {
+  return User.findOne({ login })
+    .select(['login', 'password'])
+    .exec();
 };
 
 const create = async user => {
-  const createdUser = await User.create(user);
-  return get(createdUser._id);
+  const { _id } = await User.create(user);
+  return get({ _id });
 };
 
 const update = async (_id, user) => {
   await User.updateOne({ _id }, user);
-  return get(_id);
+  return get({ _id });
 };
 
 const remove = async _id => {
@@ -26,4 +32,12 @@ const removeMany = async ids => {
   return ids.forEach(id => remove(id));
 };
 
-module.exports = { getAll, create, get, update, remove, removeMany };
+module.exports = {
+  getAll,
+  create,
+  get,
+  getAuthData,
+  update,
+  remove,
+  removeMany
+};
