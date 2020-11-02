@@ -15,8 +15,8 @@ const getAuthData = async login => {
 };
 
 const create = async user => {
-  const createdUser = await User.create(user);
-  return get({ _id: createdUser._id });
+  const { _id } = await User.create(user);
+  return get({ _id });
 };
 
 const update = async (_id, user) => {

@@ -4,7 +4,7 @@ const { JWT_SECRET_KEY } = require('../../common/config');
 const { checkPassword } = require('../../common/authHelpers');
 
 const signToken = async (email, password) => {
-  const user = await usersRepo.getAuthData({ login: email });
+  const user = await usersRepo.getAuthData(email);
 
   if (!user) {
     return null;
@@ -15,7 +15,7 @@ const signToken = async (email, password) => {
   if (compareRes) {
     const { id, login } = user;
     const token = jwt.sign({ id, login }, JWT_SECRET_KEY, { expiresIn: '24h' });
-    return token;
+    return { token };
   }
 
   return null;

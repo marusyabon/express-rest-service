@@ -19,7 +19,11 @@ const getOneById = async id => {
 
 const create = async user => {
   const password = await hashPassword(user.password);
-  return await usersRepo.create({ ...user, password });
+  return await usersRepo.create({
+    name: user.name,
+    login: user.login,
+    password
+  });
 };
 
 const update = async (id, user) => {
