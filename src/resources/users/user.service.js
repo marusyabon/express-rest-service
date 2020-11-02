@@ -1,6 +1,7 @@
 const usersRepo = require('./user.repository');
 const tasksService = require('../tasks/task.service');
 const { NotFoundError } = require('../../common/customErrors');
+const { hashPassword } = require('../../common/authHelpers');
 
 const getAll = () => usersRepo.getAll();
 
@@ -16,7 +17,10 @@ const getOneById = async id => {
   return get({ _id: id });
 };
 
-const create = user => usersRepo.create(user);
+const create = async user => {
+  const password = await hashPassword(user.password);
+  return await usersRepo.create({ ...user, password });
+};
 
 const update = async (id, user) => {
   await getOneById(id); // if user is not exists throw an error
